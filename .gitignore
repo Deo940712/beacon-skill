@@ -1,0 +1,8 @@
+# Local indexes and agent runtime state
+.codegraph/
+.omo/run-continuation/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
