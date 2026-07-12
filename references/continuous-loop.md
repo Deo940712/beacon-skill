@@ -4,6 +4,27 @@ This reference defines the audit step that runs after every archived slice, and 
 triage rules that decide whether to continue, patch the plan, or stop. It encodes a
 proven working rhythm: execute → verify → **adversarial audit** → continue or amend.
 
+## When the loop fires (non-negotiable)
+
+The loop fires **automatically** the moment slice verification passes — not when
+the user asks for it. From that moment, Archive → Audit → decide-path is one
+uninterrupted sequence in the same turn:
+
+- Tests green is NOT "done". A slice is done only after its done/ snapshot is
+  written AND the audit gate has run.
+- Ending the turn after Verify but before Audit is a protocol violation, the
+  same class of error as skipping verification itself.
+- If the audit result is `clean` or `minor`, promote the next planned SLICE and
+  keep executing without waiting for user input.
+- Stop ONLY at a natural pause point (PART complete, user decision needed,
+  missing DESIGN for the next slice) or a Hard Stop — and say which one applies.
+
+**Enforcement mechanism**: when promoting a slice into CURRENT.md, the executor
+must register the tail steps as explicit work items alongside the implementation
+items — at minimum: `verify`, `archive done/ snapshot`, `run audit gate`,
+`decide path / promote next slice`. A todo list that ends at "verify" is
+malformed; the premature stop happens because the plan itself stopped early.
+
 ## Why an audit gate exists
 
 Green tests prove the code does what the tests say — not that the tests ask the right

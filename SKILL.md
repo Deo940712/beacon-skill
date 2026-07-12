@@ -44,6 +44,13 @@ Use this skill to make repository work auditable through `.beacon/`: plan, desig
 
 ## Continuous Loop (autopilot between slices)
 
+**Trigger point: the moment a slice's verification passes.**
+`Verify → Archive → Audit → continue-or-pause` is ONE atomic sequence — never end
+the turn between these steps. Finishing Verify (tests green) is NOT a valid
+stopping point; a slice without Archive + Audit is an incomplete slice, and
+stopping there is a workflow violation. The only legitimate exits are the
+Natural pause points and Hard Stops listed below.
+
 After archiving a slice, do NOT stop by default. Run the loop:
 
 ```
