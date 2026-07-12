@@ -69,6 +69,9 @@ Loop rules:
 - **Audit is evidence-based, not opinion-based**: write throwaway probe scripts that
   actually execute suspected failure paths; only report findings that reproduce.
   Delete probes afterwards; convert every confirmed finding into a regression test.
+  The audit must meet the Minimum audit bar in `references/continuous-loop.md` —
+  and this applies equally when pausing for a user decision or incident: pausing
+  never excuses a thin audit of the slice just finished.
 - **Flexible severity triage** decides the path: crash/data-poisoning = fix before
   next slice; wrong-behavior = schedule into next slice; design contradiction =
   amend the plan artifacts before any further code.

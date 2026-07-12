@@ -49,6 +49,29 @@ bool-as-int) all slipped through. Enum tests cannot catch boundary bugs.
    regression test when fixed (reproduction-to-test rule).
 6. **Decide the path** (decision table below) and state the decision explicitly.
 
+## Minimum audit bar (what "audited" must mean)
+
+Pausing for a user decision or an incident is always legitimate — but ONLY after
+a real audit. An audit that produced no executed probes is not an audit. Before
+reporting `clean` or pausing, all of the following must hold:
+
+1. **Suspicion list exists**: the diff re-read produced a written list of
+   concrete suspicions (or an explicit "no suspicious surfaces because X").
+   An empty list with no justification is a skipped audit.
+2. **Every suspicion was executed**: each item is either `reproduced` (with
+   command + output) or `probed, clean` (with the probe that failed to
+   reproduce it). "Read the code, looks correct" is forbidden as a resolution.
+3. **Boundary classes were covered**: empty input, None/null, out-of-range
+   values, type impostors, encoding, and cross-module contract drift were each
+   considered — covered by a probe or explicitly ruled out with a reason.
+4. **Evidence is durable**: the done/ snapshot names what was probed, what was
+   found, and what was skipped. `Audited: everything, Found: clean` with no
+   probe list is malformed evidence.
+
+If time pressure forces a shallower audit, say so explicitly ("audit shallow:
+only X and Y probed, Z skipped because ...") — an honest shallow audit is
+acceptable at a pause point; a dressed-up empty one is not.
+
 ## Severity triage
 
 | Severity | Definition | Path |
@@ -88,9 +111,17 @@ Pause and report to the user instead of continuing when:
 - the next slice has no DESIGN authority yet
 - any Hard Stop condition appears
 
+A pause does not lower the audit bar. The slice being paused on must still pass
+the Minimum audit bar above BEFORE the pause is reported — pausing is a reason
+to stop promoting the next slice, never a reason to skip or thin out the audit
+of the finished one. The pause report must include the same continuation
+contract block (Audited / Found / Path / Next), with Path = "paused: <reason>".
+
 ## Anti-patterns
 
 - Auditing by re-reading code and declaring it fine without executing anything
+- Thinning out the audit because a pause point is coming ("user will review it
+  anyway") — the pause report depends on the audit being real
 - Fixing HIGH findings "later" while continuing to build on poisoned foundations
 - Opening incidents for ordinary design corrections (inflates incident noise)
 - Letting audit scope creep into a full re-review of all prior slices — audit the
