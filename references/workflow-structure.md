@@ -30,6 +30,10 @@ flowchart LR
 - `CURRENT.md` status `active`: read active DESIGN and TODO, then execute only
   CURRENT scope.
 - `CURRENT.md` status `recovering` or `blocked`: read the linked incident first.
+- `CURRENT.md` looks finished (scope done, verification green) but no done/
+  snapshot or audit record exists: the previous session stopped mid-loop.
+  Resume at Archive → Audit, not at implementation, and not by asking the user
+  what to do next.
 - Missing content is a user question only when product or design intent cannot
   be inferred.
 
